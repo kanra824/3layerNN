@@ -5,6 +5,7 @@ import os
 
 import numpy as np
 import functions as fun
+import math
 
 class Sigmoid:
 
@@ -75,3 +76,19 @@ class ReLU:
         diff[self.mask] = 0
         dx = diff
         return dx
+
+class Dropout:
+
+    def __init__(self,num=0.2):
+        self.num = num
+        self.mask = None
+
+    def forward(self, x, test=False):
+        if test:
+            return x * (1 - self.num)
+        else:
+            self.mask = np.random.rand(*x.shape) > self.num
+            return x * self.mask
+
+    def backward(self, diff):
+         return diff * self.mask
