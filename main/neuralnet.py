@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 class NeuralNet:
 
-    def __init__(self, input_size, mid_size, out_size):
+    def __init__(self, input_size, mid_size, out_size, sig=True):
         self.weights = {'W1': np.random.normal(0, 1 / np.sqrt(input_size), (input_size, mid_size)),
                         'b1': np.random.normal(0, 1 / np.sqrt(input_size), (mid_size,)),
                         'W2': np.random.normal(0, 1 / np.sqrt(mid_size), (mid_size, out_size)),
@@ -18,7 +18,10 @@ class NeuralNet:
 
         self.layers = OrderedDict()
         self.layers['Affine1'] = layers.Affine(self.weights['W1'], self.weights['b1'])
-        self.layers['Sig'] = layers.Sigmoid()
+        if sig:
+            self.layers['Sig'] = layers.Sigmoid()
+        else:
+            self.layers['ReLU'] = layers.ReLU()
         self.layers['Affine2'] = layers.Affine(self.weights['W2'], self.weights['b2'])
         self.last_layer = layers.SmLo()
 

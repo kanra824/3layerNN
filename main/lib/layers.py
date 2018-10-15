@@ -58,5 +58,20 @@ class SmLo:
         dx = self.y.copy()
         dx[np.arange(batch_size), self.t] -= 1
         dx = dx / batch_size
+        return dx
 
+class ReLU:
+
+    def __init__(self):
+        self.mask = None
+
+    def forward(self, x):
+        self.mask = (x <= 0)
+        out = x.copy()
+        out[self.mask] = 0
+        return out
+
+    def backward(self, diff):
+        diff[self.mask] = 0
+        dx = diff
         return dx

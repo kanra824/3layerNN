@@ -14,23 +14,25 @@ mndata = MNIST("../")
 input_size = 784
 mid_size = 100
 out_size = 10
-epoch = 3000
+epoch = 2000
 batch_size = 200
 learning_rate = 0.01
+sigmoid = False
 
 print("loading...")
 X, Y = mndata.load_training()
 print("load training data...")
 X_test, Y_test = mndata.load_testing()
 print("load testing data...")
-X = np.array(X)
+if not sigmoid:
+    X = np.array(X) / 255
 X = X.reshape((X.shape[0], 28 * 28))
 Y = np.array(Y)
 X_test = np.array(X_test)
 Y_test = np.array(Y_test)
 loss_list = []
 
-nn = NN.NeuralNet(input_size, mid_size, out_size)
+nn = NN.NeuralNet(input_size, mid_size, out_size, sigmoid)
 
 for i in range(epoch):
     mask = np.random.choice(range(0, X.shape[0]), batch_size, replace=False)
