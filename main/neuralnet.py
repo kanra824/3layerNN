@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import os
 import sys
 sys.path.append("./lib")
 
@@ -25,7 +24,7 @@ class NeuralNet:
 
     def predict(self, x):
         out = x
-        for layer in self.layers:
+        for layer in self.layers.values():
             out = layer.forward(out)
         return out
 
@@ -43,7 +42,9 @@ class NeuralNet:
         self.loss(x, t)
         diff = 1
         diff = self.last_layer.backward(diff)
-        for layer in (list(self.layers.values()).reverse):
+        layers = list(self.layers.values())
+        layers.reverse()
+        for layer in layers:
             diff = layer.backward(diff)
         grads = {'W1': self.layers['Affine1'].dW,
                  'b1': self.layers['Affine1'].db,
