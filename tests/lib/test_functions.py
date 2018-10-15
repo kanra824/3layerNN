@@ -23,4 +23,3 @@ def test_softmax_02():
     x = np.array([0.3, 2.9, 4.0])
     y = np.array([0.01821127, 0.24519181, 0.73659691])
     assert fun.softmax(x) == pytest.approx(y)
-    
