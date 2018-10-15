@@ -11,13 +11,20 @@ from collections import OrderedDict
 class NeuralNet:
 
     def __init__(self, input_size, mid_size, out_size, sig=True):
-        self.weights = {'W1': np.random.normal(0, 1 / np.sqrt(input_size), (input_size, mid_size)),
-                        'b1': np.random.normal(0, 1 / np.sqrt(input_size), (mid_size,)),
-                        'W2': np.random.normal(0, 1 / np.sqrt(mid_size), (mid_size, out_size)),
-                        'b2': np.random.normal(0, 1 / np.sqrt(mid_size), (out_size,))}
+        mag = None
+        if sig:
+            mag = 1
+        else:
+            mag = 2
+        self.weights = {'W1': np.random.normal(0, mag / np.sqrt(input_size), (input_size, mid_size)),
+                        'b1': np.random.normal(0, mag / np.sqrt(input_size), (mid_size,)),
+                        'W2': np.random.normal(0, mag / np.sqrt(mid_size), (mid_size, out_size)),
+                        'b2': np.random.normal(0, mag / np.sqrt(mid_size), (out_size,))}
+
 
         self.layers = OrderedDict()
         self.layers['Affine1'] = layers.Affine(self.weights['W1'], self.weights['b1'])
+        self.layers['Dropout'] = layers.Dropout()
         if sig:
             self.layers['Sig'] = layers.Sigmoid()
         else:
@@ -25,10 +32,13 @@ class NeuralNet:
         self.layers['Affine2'] = layers.Affine(self.weights['W2'], self.weights['b2'])
         self.last_layer = layers.SmLo()
 
-    def predict(self, x):
+    def predict(self, x, test=False):
         out = x
         for layer in self.layers.values():
-            out = layer.forward(out)
+            if(layer.__class__.__name__ == 'Dropout'):
+                out = layer.forward(out, test)
+            else:
+                out = layer.forward(out)
         return out
 
     def loss(self, x, t):
@@ -36,7 +46,7 @@ class NeuralNet:
         return self.last_layer.forward(result, t)
 
     def accuracy(self, x, t):
-        result = self.predict(x)
+        result = self.predict(x, True)
         ans = np.argmax(result, axis=1)
         acc = np.sum(ans == t) / float(x.shape[0])
         return acc

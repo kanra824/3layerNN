@@ -15,7 +15,7 @@ mndata = MNIST("../")
 input_size = 784
 mid_size = 100
 out_size = 10
-epoch = 2000
+epoch = 200
 batch_size = 200
 learning_rate = 0.01
 sigmoid = False
@@ -50,10 +50,12 @@ for i in range(epoch):
         print(loss)
     loss_list.append(loss)
 
-print(nn.accuracy(X_test, Y_test))
-plt.plot(loss_list)
+acc = nn.accuracy(X_test, Y_test)
+print(acc)
+plt.plot(loss_list, label=optimizer.__class__.__name__ + ":" + str(acc))
 plt.title('neuralnetwork')
 plt.xlabel('epoch')
 plt.ylabel('loss')
 
+plt.legend()
 plt.show()
