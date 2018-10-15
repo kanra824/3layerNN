@@ -1,0 +1,5 @@
+[
+  "test_functions.py::test_sigmoid_01",
+  "test_functions.py::test_softmax_01",
+  "test_functions.py::test_softmax_02"
+]
