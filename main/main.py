@@ -7,6 +7,7 @@ sys.path.append("os.pardir()")
 import matplotlib.pyplot as plt
 import numpy as np
 import layers
+import optimizers as op
 import neuralnet as NN
 from mnist import MNIST
 mndata = MNIST("../")
@@ -18,6 +19,8 @@ epoch = 2000
 batch_size = 200
 learning_rate = 0.01
 sigmoid = False
+optimizer = op.Adam(784, mid_size, 10)
+
 
 print("loading...")
 X, Y = mndata.load_training()
@@ -40,8 +43,7 @@ for i in range(epoch):
     Y_batch = Y[mask]
     grads = nn.grad(X_batch, Y_batch)
 
-    for key in ['W1', 'b1', 'W2', 'b2']:
-        nn.weights[key] -= learning_rate * grads[key]
+    nn.weights = optimizer.update(nn.weights, grads)
 
     loss = nn.loss(X_batch, Y_batch)
     if i % 100 == 0:
