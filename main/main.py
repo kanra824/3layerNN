@@ -15,11 +15,14 @@ mndata = MNIST("../")
 input_size = 784
 mid_size = 100
 out_size = 10
-epoch = 200
-batch_size = 200
+epoch = 1500
+batch_size = 100
 learning_rate = 0.01
 sigmoid = False
-optimizer = op.Adam(784, mid_size, 10)
+optimizers = [op.SGD(),
+              op.Momentum(),
+              op.AdaGrad(),
+              op.Adam(784, mid_size, 10)]
 
 
 print("loading...")
@@ -33,28 +36,32 @@ X = X.reshape((X.shape[0], 28 * 28))
 Y = np.array(Y)
 X_test = np.array(X_test)
 Y_test = np.array(Y_test)
-loss_list = []
 
-nn = NN.NeuralNet(input_size, mid_size, out_size, sigmoid)
 
-for i in range(epoch):
-    mask = np.random.choice(range(0, X.shape[0]), batch_size, replace=False)
-    X_batch = X[mask]
-    Y_batch = Y[mask]
-    grads = nn.grad(X_batch, Y_batch)
+for optimizer in optimizers:
+    print(optimizer.__class__.__name__)
+    loss_list = []
+    nn = NN.NeuralNet(input_size, mid_size, out_size, sigmoid)
 
-    nn.weights = optimizer.update(nn.weights, grads)
+    for i in range(epoch):
+        mask = np.random.choice(range(0, X.shape[0]), batch_size, replace=False)
+        X_batch = X[mask]
+        Y_batch = Y[mask]
+        grads = nn.grad(X_batch, Y_batch)
 
-    loss = nn.loss(X_batch, Y_batch)
-    if i % 100 == 0:
-        print(loss)
-    loss_list.append(loss)
+        nn.weights = optimizer.update(nn.weights, grads)
 
-acc = nn.accuracy(X_test, Y_test)
-print(acc)
-plt.plot(loss_list, label=optimizer.__class__.__name__ + ":" + str(acc))
-plt.title('neuralnetwork')
-plt.xlabel('epoch')
+        loss = nn.loss(X_batch, Y_batch)
+        if i % 100 == 0:
+            print(str(i)+ ":" + str(loss))
+        if i % 10 == 0:
+            loss_list.append(loss)
+
+    acc = nn.accuracy(X_test, Y_test)
+    print(acc)
+    plt.plot(loss_list, label=optimizer.__class__.__name__ + ":" + str(acc))
+plt.title('NeuralNetwork')
+plt.xlabel('epoch / 10')
 plt.ylabel('loss')
 
 plt.legend()
