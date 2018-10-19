@@ -6,6 +6,7 @@ sys.path.append("./lib")
 sys.path.append("os.pardir()")
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 import layers
 import optimizers as op
 import neuralnet as NN
@@ -13,16 +14,13 @@ from mnist import MNIST
 mndata = MNIST("../")
 
 input_size = 784
-mid_size = 100
+mid_size = 200
 out_size = 10
-epoch = 1500
+epoch = 10000
 batch_size = 100
 learning_rate = 0.01
 sigmoid = False
-optimizers = [op.SGD(),
-              op.Momentum(),
-              op.AdaGrad(),
-              op.Adam(784, mid_size, 10)]
+optimizers = [op.Adam(784, mid_size, 10)]
 
 
 print("loading...")
@@ -54,12 +52,13 @@ for optimizer in optimizers:
         loss = nn.loss(X_batch, Y_batch)
         if i % 100 == 0:
             print(str(i)+ ":" + str(loss))
-        if i % 10 == 0:
-            loss_list.append(loss)
+        loss_list.append(loss)
 
     acc = nn.accuracy(X_test, Y_test)
     print(acc)
     plt.plot(loss_list, label=optimizer.__class__.__name__ + ":" + str(acc))
+    with open('./save/' + optimizer.__class__.__name__, 'wb') as f:
+        pickle.dump(nn, f)
 plt.title('NeuralNetwork')
 plt.xlabel('epoch / 10')
 plt.ylabel('loss')
