@@ -14,13 +14,15 @@ from mnist import MNIST
 mndata = MNIST("../")
 
 input_size = 784
-mid_size = 200
+mid_size = 150
 out_size = 10
-epoch = 10000
+epoch = 1000
 batch_size = 100
 learning_rate = 0.01
 sigmoid = False
-optimizers = [op.Adam(784, mid_size, 10)]
+optimizers = [op.AdaGrad(),
+              op.Adam(784, mid_size, 10)]
+
 
 
 print("loading...")
@@ -56,12 +58,13 @@ for optimizer in optimizers:
 
     acc = nn.accuracy(X_test, Y_test)
     print(acc)
-    plt.plot(loss_list, label=optimizer.__class__.__name__ + ":" + str(acc))
+    plt.plot(loss_list, label=optimizer.__class__.__name__ + ":" + str(acc), lw=1)
     with open('./save/' + optimizer.__class__.__name__, 'wb') as f:
         pickle.dump(nn, f)
 plt.title('NeuralNetwork')
-plt.xlabel('epoch / 10')
+plt.xlabel('epoch')
 plt.ylabel('loss')
+plt.axis([0, epoch, 0, 3])
 
 plt.legend()
 plt.show()
