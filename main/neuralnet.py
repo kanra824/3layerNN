@@ -24,11 +24,11 @@ class NeuralNet:
 
         self.layers = OrderedDict()
         self.layers['Affine1'] = layers.Affine(self.weights['W1'], self.weights['b1'])
-        self.layers['Dropout'] = layers.Dropout()
         if sig:
             self.layers['Sig'] = layers.Sigmoid()
         else:
             self.layers['ReLU'] = layers.ReLU()
+        self.layers['Dropout'] = layers.Dropout()
         self.layers['Affine2'] = layers.Affine(self.weights['W2'], self.weights['b2'])
         self.last_layer = layers.SmLo()
 

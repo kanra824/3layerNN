@@ -79,7 +79,7 @@ class ReLU:
 
 class Dropout:
 
-    def __init__(self,num=0.2):
+    def __init__(self,num=0.5):
         self.num = num
         self.mask = None
 

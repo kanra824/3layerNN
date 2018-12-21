@@ -14,15 +14,16 @@ from mnist import MNIST
 mndata = MNIST("../")
 
 input_size = 784
-mid_size = 150
+mid_size = 200
 out_size = 10
-epoch = 1000
-batch_size = 100
+epoch = 5000
+batch_size = 200
 learning_rate = 0.01
 sigmoid = False
-optimizers = [op.AdaGrad(),
+optimizers = [op.SGD(),
+              op.Momentum(),
+              op.AdaGrad(),
               op.Adam(784, mid_size, 10)]
-
 
 
 print("loading...")
